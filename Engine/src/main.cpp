@@ -1,18 +1,22 @@
 #include <iostream>
-#include "ecs\Component.h"
-#include "ecs\GameObject.h"
-#include <GLFW/glfw3.h>
+#include "core/logger/Log.h"
+#include "window/Window.h"
 
 int main()
 {
-    if (!glfwInit())
-    {
-        std::cout << "Failed to initialize GLFW" << std::endl;
-        return -1;
-    }
+    // Initialize logger
+    Log::Init();
 
-    GameObject go;
-    Transform* test = go.AddComponent<Transform>();
+    // Create window info
+    WindowCreateInfo info{};
+    info.width = 800;
+    info.height = 600;
+    info.api = GraphicsAPI::OpenGL;
+    info.title = "Engine";
 
-    std::cout << test->GetName() << std::endl;
+    // Create window
+    std::unique_ptr<Window> window = std::make_unique<Window>(info);
+   
+    // Run App
+    window->Run();
 }
