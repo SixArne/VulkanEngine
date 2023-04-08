@@ -4,6 +4,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(FetchContent)
 
+# //FIXME - Make 3 different ways of fetching content. lib header-only dll
 list(APPEND dependencies
     "glm https://github.com/SixArne/glm.git master"
     "spdlog https://github.com/SixArne/spdlog.git v1.x"
