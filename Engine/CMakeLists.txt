@@ -4,68 +4,55 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(FetchContent)
 
-# Define github dependencies
-FetchContent_Declare(
-    glfw
-    GIT_REPOSITORY https://github.com/SixArne/glfw.git
+list(APPEND dependencies
+    "glm https://github.com/SixArne/glm.git master"
+    "spdlog https://github.com/SixArne/spdlog.git v1.x"
+    "glad https://github.com/SixArne/glad.git main"
 )
 
-# Define github dependencies
-FetchContent_Declare(
-    glm
-    GIT_REPOSITORY https://github.com/SixArne/glm.git
-)
+foreach(dep IN LISTS dependencies)
+    string(REPLACE " " ";" DEPENDENCY_ITEM_LIST ${dep})
+    message(STATUS "string = ${DEPENDENCY_ITEM_LIST}")
 
-FetchContent_Declare(
-    spdlog
-    GIT_REPOSITORY https://github.com/SixArne/spdlog.git
-    GIT_TAG v1.x # or whatever tag or branch you want to use
-)
+    list(LENGTH DEPENDENCY_ITEM_LIST len)
+    message(STATUS "len = ${len}")
+    # len = 3
 
-FetchContent_Declare(
-    glad
-    GIT_REPOSITORY https://github.com/SixArne/glad.git
-    GIT_TAG main
-)
+    list(GET DEPENDENCY_ITEM_LIST 0 dep_name)
+    list(GET DEPENDENCY_ITEM_LIST 1 dep_url)
+    list(GET DEPENDENCY_ITEM_LIST 2 dep_branch)
+
+    # Fetch the dependency
+    FetchContent_Declare(
+        ${dep_name}
+        GIT_REPOSITORY "${dep_url}"
+        GIT_TAG "${dep_branch}"
+    )
+
+    message(STATUS "Fetching ${dep_name} from ${dep_url} on branch ${dep_branch}")
+
+    # Get properties
+    FetchContent_GetProperties(${dep_name})
+
+    # If the dependency is not populated, populate it
+    if(NOT ${dep_name}_POPULATED)
+        FetchContent_Populate(${dep_name})
+
+        # Make include directories available
+        set(${dep_name}_INCLUDE_DIR ${${dep_name}_SOURCE_DIR})
+    endif()
+
+endforeach()
 
 # Fetch dependencies (download and setup include directories)
 # glfw does this automatically
+FetchContent_Declare(
+    "glfw"
+    GIT_REPOSITORY "https://github.com/SixArne/glfw.git"
+    GIT_TAG "master"
+)
+
 FetchContent_MakeAvailable(glfw)
-
-# glm does not, so we have to do it manually
-# GetProperties exposes a variable called glm_POPULATED
-# and a variable called glm_SOURCE_DIR
-FetchContent_GetProperties(glm)
-
-# Get properties for spdlog like include directory
-FetchContent_GetProperties(spdlog)
-
-# Get properties for glad like include directory
-FetchContent_GetProperties(glad)
-
-if(NOT glm_POPULATED)
-  # FetchContent_Populate will download the repo and set the variables
-  FetchContent_Populate(glm)
-
-  # Here we overwrite set the include directory to the source directory
-  set(glm_INCLUDE_DIR ${glm_SOURCE_DIR})
-endif()
-
-if(NOT spdlog_POPULATED)
-  # FetchContent_Populate will download the repo and set the variables
-  FetchContent_Populate(spdlog)
-
-  # Here we overwrite set the include directory to the source directory
-  set(spdlog_INCLUDE_DIR ${spdlog_SOURCE_DIR}/include)
-endif()
-
-if(NOT glad_POPULATED)
-  # FetchContent_Populate will download the repo and set the variables
-  FetchContent_Populate(glad)
-
-  # Here we overwrite set the include directory to the source directory
-  set(glad_INCLUDE_DIR ${glad_SOURCE_DIR}/include)
-endif()
 
 add_executable(Engine
     "./src/main.cpp"
@@ -90,12 +77,15 @@ target_include_directories(Engine PUBLIC
     # Self include root directory
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
 
+    # glfw include directory
+    "${glfw_INCLUDE_DIR}/include"
+
     # glm include directory
     "${glm_INCLUDE_DIR}"
 
     # spdlog include directory
-    "${spdlog_INCLUDE_DIR}"
+    "${spdlog_INCLUDE_DIR}/include"
 
     # glad include directory
-    "${glad_INCLUDE_DIR}"
+    "${glad_INCLUDE_DIR}/include"
 )
