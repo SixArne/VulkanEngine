@@ -16,8 +16,8 @@ Window::Window(const WindowCreateInfo& info)
     m_Window = std::unique_ptr<GLFWwindow, std::function<void(GLFWwindow*)>>
     (
         glfwCreateWindow(info.width, info.height, info.title, nullptr, nullptr),
-        [](GLFWwindow* window) { 
-            glfwDestroyWindow(window); 
+        [](GLFWwindow* window) {
+            glfwDestroyWindow(window);
             F_LOG_CORE_INFO("Window destroyed");
         }
     );

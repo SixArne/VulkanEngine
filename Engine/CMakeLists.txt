@@ -13,11 +13,8 @@ list(APPEND dependencies
 
 foreach(dep IN LISTS dependencies)
     string(REPLACE " " ";" DEPENDENCY_ITEM_LIST ${dep})
-    message(STATUS "string = ${DEPENDENCY_ITEM_LIST}")
 
     list(LENGTH DEPENDENCY_ITEM_LIST len)
-    message(STATUS "len = ${len}")
-    # len = 3
 
     list(GET DEPENDENCY_ITEM_LIST 0 dep_name)
     list(GET DEPENDENCY_ITEM_LIST 1 dep_url)
@@ -72,6 +69,23 @@ target_link_libraries(Engine PUBLIC
     glfw
     opengl32
 )
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(BUILD_CONFIG "Debug")
+else()
+    set(BUILD_CONFIG "Release")
+endif()
+
+set(SHADERS_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shaders)
+set(SHADERS_DEST_DIR ${CMAKE_BINARY_DIR}/Engine/${BUILD_CONFIG})
+
+message(STATUS "Copying shaders from ${SHADERS_SOURCE_DIR} to ${SHADERS_DEST_DIR}")
+
+
+file(COPY ${SHADERS_SOURCE_DIR} DESTINATION ${SHADERS_DEST_DIR})
+
+# Add the shader path as a preprocessor definition
+add_definitions(-DSHADER_PATH="${SHADERS_DEST_DIR}")
 
 message(STATUS "include directory ${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories(Engine PUBLIC

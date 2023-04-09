@@ -16,7 +16,7 @@ int main()
 
     // Create window
     std::unique_ptr<Window> window = std::make_unique<Window>(info);
-   
+
     // Run App
     window->Run();
 }

@@ -5,25 +5,25 @@
             "name": "Debug Engine Project",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/Engine/${input:buildType}/Engine",
+            "program": "${workspaceFolder}/build/Engine/Debug/Engine",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "console": "internalConsole",
-            "preLaunchTask": "build",
-        }
-    ],
-    "inputs": [
+            "preLaunchTask": "Debug"
+        },
         {
-            "id": "buildType",
-            "type": "pickString",
-            "description": "Select the build type",
-            "options": [
-                "Debug",
-                "Release"
-            ],
-            "default": "Debug"
+            "name": "Release Engine Project",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/Engine/Release/Engine",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "console": "internalConsole",
+            "preLaunchTask": "Release"
         }
     ]
 }
