@@ -69,7 +69,7 @@ int main()
     }
 
     // Start playing the sound on a separate thread
-    std::thread soundThread(playSound, system, "resources/sound/levelComplete.mp3");
+    std::thread soundThread(playSound, system, "resources/sound/blueSky.mp3");
 
 
 
