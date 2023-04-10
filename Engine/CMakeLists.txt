@@ -10,6 +10,7 @@ list(APPEND dependencies
     "spdlog https://github.com/SixArne/spdlog.git v1.x"
     "glad https://github.com/SixArne/glad.git main"
     "stb https://github.com/SixArne/stb.git master"
+    "fmod https://github.com/SixArne/FMOD.git test"
 )
 
 foreach(dep IN LISTS dependencies)
@@ -38,6 +39,7 @@ foreach(dep IN LISTS dependencies)
         FetchContent_Populate(${dep_name})
 
         # Make include directories available
+        message(STATUS "Setting ${dep_name}_INCLUDE_DIR to ${${dep_name}_SOURCE_DIR}")
         set(${dep_name}_INCLUDE_DIR ${${dep_name}_SOURCE_DIR})
     endif()
 
@@ -76,11 +78,15 @@ add_executable(Engine
     "${glad_SOURCE_DIR}/src/glad.c"
 )
 
+
+message(STATUS "Looking for lib files in ${fmod_SOURCE_DIR}/lib/x64")
+link_directories(${fmod_SOURCE_DIR}/lib/x64/)
 # Link with glfw
 target_link_libraries(Engine PUBLIC
     glfw
     assimp::assimp
     opengl32
+    ${fmod_SOURCE_DIR}/lib/x64/fmod_vc.lib
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -89,16 +95,34 @@ else()
     set(BUILD_CONFIG "Release")
 endif()
 
-set(SHADERS_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shaders)
-set(SHADERS_DEST_DIR ${CMAKE_BINARY_DIR}/Engine/${BUILD_CONFIG})
+set(RESOURCES_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/resources)
+set(RESOURCES_DEST_DIR ${CMAKE_BINARY_DIR}/Engine/${BUILD_CONFIG})
 
-message(STATUS "Copying shaders from ${SHADERS_SOURCE_DIR} to ${SHADERS_DEST_DIR}")
-
-
-file(COPY ${SHADERS_SOURCE_DIR} DESTINATION ${SHADERS_DEST_DIR})
+message(STATUS "Copying resources from ${RESOURCES_SOURCE_DIR} to ${RESOURCES_DEST_DIR}")
 
 
-message(STATUS "include directory ${CMAKE_CURRENT_SOURCE_DIR}")
+file(COPY ${RESOURCES_SOURCE_DIR} DESTINATION ${RESOURCES_DEST_DIR})
+
+
+message(STATUS "${fmod_SOURCE_DIR}/lib/x64)}")
+message(STATUS "${fmod_LIBRARY}")
+
+# copy FMOD DLL
+message(STATUS "Copying FMOD DLL from ${fmod_LIBRARY} to ${CMAKE_BINARY_DIR}/Engine/${BUILD_CONFIG}")
+
+# Set the FMOD source library directory
+set(FMOD_LIBS_DIR ${fmod_SOURCE_DIR}/lib/x64/)
+
+# Set the FMOD DLL output directory
+set(FMOD_DLL_OUTPUT ${CMAKE_BINARY_DIR}/Engine/${BUILD_CONFIG})
+
+# Create a list of FMOD DLL files
+file(GLOB FMOD_DLL_FILES "${FMOD_LIBS_DIR}/*.dll")
+
+# Copy the FMOD DLL files to the output directory
+file(COPY ${FMOD_DLL_FILES} DESTINATION ${FMOD_DLL_OUTPUT})
+
+# Header include directories
 target_include_directories(Engine PUBLIC
     # Self include root directory
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
@@ -121,4 +145,5 @@ target_include_directories(Engine PUBLIC
     # assimp include directory
     "${assimp_INCLUDE_DIR}"
 
+    "${fmod_INCLUDE_DIR}"
 )

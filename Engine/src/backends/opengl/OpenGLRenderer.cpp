@@ -14,12 +14,12 @@ void OpenGLRenderer::Init()
     }
 
     m_ShaderProgram = LoadShader(
-        "shaders/opengl/DiffuseShader.vert",
-        "shaders/opengl/DiffuseShader.frag"
+        "resources/shaders/opengl/DiffuseShader.vert",
+        "resources/shaders/opengl/DiffuseShader.frag"
     );
 
-    auto image = ImageLoader::GetInstance().Load("images/test.jpg");
-    auto mesh = MeshLoader::GetInstance().Load("meshes/Chair.obj");
+    auto image = ImageLoader::GetInstance().Load("resources/images/test.jpg");
+    auto mesh = MeshLoader::GetInstance().Load("resources/meshes/Chair.obj");
 
     glGenVertexArrays(1, &m_VertexArray);
     glGenBuffers(1, &m_VertexBuffer);

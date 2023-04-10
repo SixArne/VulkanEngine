@@ -50,6 +50,17 @@
             },
             "problemMatcher": []
         },
+        {
+            "type": "cmake",
+            "label": "CMake: build",
+            "command": "build",
+            "targets": [
+                "ALL_BUILD"
+            ],
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "CMake template build task"
+        }
     ],
     "inputs": [
         {
