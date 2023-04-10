@@ -8,7 +8,7 @@
             "program": "${workspaceFolder}/build/Engine/Debug/Engine",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/Engine",
             "environment": [],
             "console": "internalConsole",
             "preLaunchTask": "Debug"
@@ -20,7 +20,7 @@
             "program": "${workspaceFolder}/build/Engine/Release/Engine",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/Engine",
             "environment": [],
             "console": "internalConsole",
             "preLaunchTask": "Release"

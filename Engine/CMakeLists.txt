@@ -9,6 +9,7 @@ list(APPEND dependencies
     "glm https://github.com/SixArne/glm.git master"
     "spdlog https://github.com/SixArne/spdlog.git v1.x"
     "glad https://github.com/SixArne/glad.git main"
+    "stb https://github.com/SixArne/stb.git master"
 )
 
 foreach(dep IN LISTS dependencies)
@@ -50,7 +51,16 @@ FetchContent_Declare(
     GIT_TAG "master"
 )
 
+FetchContent_Declare(
+    "assimp"
+    GIT_REPOSITORY "https://github.com/SixArne/assimp.git"
+    GIT_TAG "master"
+)
+
 FetchContent_MakeAvailable(glfw)
+FetchContent_MakeAvailable(assimp)
+
+
 
 add_executable(Engine
     "./src/main.cpp"
@@ -59,6 +69,8 @@ add_executable(Engine
     "./src/window/Window.cpp"
     "./src/core/logger/Log.cpp"
     "./src/backends/opengl/OpenGLRenderer.cpp"
+    "./src/core/loaders/images/ImageLoader.cpp"
+    "./src/core/loaders/meshes/MeshLoader.cpp"
 
     # glad source file
     "${glad_SOURCE_DIR}/src/glad.c"
@@ -67,6 +79,7 @@ add_executable(Engine
 # Link with glfw
 target_link_libraries(Engine PUBLIC
     glfw
+    assimp::assimp
     opengl32
 )
 
@@ -84,8 +97,6 @@ message(STATUS "Copying shaders from ${SHADERS_SOURCE_DIR} to ${SHADERS_DEST_DIR
 
 file(COPY ${SHADERS_SOURCE_DIR} DESTINATION ${SHADERS_DEST_DIR})
 
-# Add the shader path as a preprocessor definition
-add_definitions(-DSHADER_PATH="${SHADERS_DEST_DIR}")
 
 message(STATUS "include directory ${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories(Engine PUBLIC
@@ -103,4 +114,11 @@ target_include_directories(Engine PUBLIC
 
     # glad include directory
     "${glad_INCLUDE_DIR}/include"
+
+    # stb include directory
+    "${stb_INCLUDE_DIR}"
+
+    # assimp include directory
+    "${assimp_INCLUDE_DIR}"
+
 )

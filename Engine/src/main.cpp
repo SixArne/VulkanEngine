@@ -1,3 +1,4 @@
+#include <vld.h>
 #include <iostream>
 #include "core/logger/Log.h"
 #include "window/Window.h"

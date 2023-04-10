@@ -3,6 +3,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "utils/File.h"
+#include "core/loaders/images/ImageLoader.h"
+#include "core/loaders/meshes/MeshLoader.h"
 
 void OpenGLRenderer::Init()
 {
@@ -12,9 +14,12 @@ void OpenGLRenderer::Init()
     }
 
     m_ShaderProgram = LoadShader(
-        SHADER_PATH "/shaders/opengl/DiffuseShader.vert",
-        SHADER_PATH "/shaders/opengl/DiffuseShader.frag"
+        "shaders/opengl/DiffuseShader.vert",
+        "shaders/opengl/DiffuseShader.frag"
     );
+
+    auto image = ImageLoader::GetInstance().Load("images/test.jpg");
+    auto mesh = MeshLoader::GetInstance().Load("meshes/Chair.obj");
 
     glGenVertexArrays(1, &m_VertexArray);
     glGenBuffers(1, &m_VertexBuffer);
