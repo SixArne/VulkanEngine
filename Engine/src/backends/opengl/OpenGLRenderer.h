@@ -14,6 +14,11 @@ public:
     virtual void Render() override;
     virtual void Clear() override;
 
+    virtual void Update(double deltaTime) override;
+    virtual void FixedUpdate(double fixedDeltaTime) override;
+    virtual void RenderImGui() override;
+    virtual void LateUpdate(double fixedDeltaTime) override;
+
 private:
     GLuint LoadShader(const std::string& vertexPath, const std::string& fragmentPath);
     void CompileShader(GLuint shader, const char* source);

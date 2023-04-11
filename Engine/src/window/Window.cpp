@@ -3,6 +3,7 @@
 #include <iostream>
 #include "core/logger/Log.h"
 #include "backends/opengl/OpenGLRenderer.h"
+#include "core/scene/SceneManager.h"
 
 Window::Window(const WindowCreateInfo& info)
 {
@@ -55,12 +56,41 @@ void Window::CreateRenderer(GraphicsAPI api)
 
 void Window::Run()
 {
+    auto& sceneManager = SceneManager::GetInstance();
+
+    double lag{0.0};
+    double fixedTimeStepSec{0.01666666666666666666666666666667};
+    double desiredFPS{144.0};
+    double desiredFrameTime{1.0 / desiredFPS};
+
+    auto lastTime = std::chrono::high_resolution_clock::now();
+
+    sceneManager.Init();
     while (!glfwWindowShouldClose(m_Window.get()))
     {
+        const auto currentTime = std::chrono::high_resolution_clock::now();
+        const auto deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count();
+
         m_Renderer->Clear();
+
+        while (lag >= fixedTimeStepSec)
+        {
+            sceneManager.FixedUpdate(fixedTimeStepSec);
+            lag -= fixedTimeStepSec;
+        }
+        sceneManager.Update(deltaTime);
+
+        m_Renderer->Render();
+        sceneManager.RenderImGui();
 
         glfwSwapBuffers(m_Window.get());
         glfwPollEvents();
+
+        const auto sleepTime = currentTime + std::chrono::milliseconds(static_cast<int>(desiredFrameTime)) - std::chrono::high_resolution_clock::now();
+        if (sleepTime > std::chrono::milliseconds(0))
+        {
+            std::this_thread::sleep_for(sleepTime);
+        }
     }
 
     glfwTerminate();

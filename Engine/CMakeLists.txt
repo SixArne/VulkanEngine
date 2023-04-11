@@ -73,6 +73,10 @@ add_executable(Engine
     "./src/backends/opengl/OpenGLRenderer.cpp"
     "./src/core/loaders/images/ImageLoader.cpp"
     "./src/core/loaders/meshes/MeshLoader.cpp"
+    "./src/core/scene/SceneManager.cpp"
+    "./src/core/scene/Scene.cpp"
+    "./src/ecs/components/AudioSource.cpp"
+    "./src/core/systems/AudioSystem.cpp"
 
     # glad source file
     "${glad_SOURCE_DIR}/src/glad.c"

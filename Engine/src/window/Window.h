@@ -35,6 +35,9 @@ public:
 private:
     std::unique_ptr<IRenderer> m_Renderer;
     std::unique_ptr<GLFWwindow, std::function<void(GLFWwindow*)>> m_Window;
+
+    double m_LastTime{0.0};
+    double m_DeltaTime{0.0};
 };
 
 #endif

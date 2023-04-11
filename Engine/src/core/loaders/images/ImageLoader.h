@@ -28,11 +28,11 @@ struct Image
 class ImageLoader : public Singleton<ImageLoader>
 {
 public:
-    ImageLoader() = default;
-    ~ImageLoader() = default;
-
-public:
     std::shared_ptr<Image> Load(const char* path);
+
+private:
+    friend class Singleton<ImageLoader>;
+    ImageLoader() = default;
 };
 
 

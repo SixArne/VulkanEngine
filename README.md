@@ -49,3 +49,7 @@ Choose either Debug or Release
 Go to the debug pannel and run the debugger. Make sure that the CMAKE project was configured for the
 configuration you are debugging.
 
+## Output
+
+You can find the output of the Engine under `build/Engine/Debug|Release`.
+Note: If you don't see fmod.dll or a resource folder then you have not configured cmake correctly.

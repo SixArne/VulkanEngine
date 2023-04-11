@@ -26,12 +26,12 @@ struct Mesh
 class MeshLoader : public Singleton<MeshLoader>
 {
 public:
-    MeshLoader() = default;
-    ~MeshLoader() = default;
-
     Mesh* Load(const char* path);
 
 private:
+    friend class Singleton<MeshLoader>;
+    MeshLoader() = default;
+
     void processNode(aiNode* node, const aiScene* scene);
     void processMesh(aiMesh* mesh, const aiScene* scene);
 

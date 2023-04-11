@@ -41,8 +41,6 @@ void OpenGLRenderer::Shutdown()
 
 void OpenGLRenderer::Render()
 {
-
-
     F_LOG_CORE_INFO("OpenGLRenderer::Draw()");
 }
 
@@ -50,6 +48,22 @@ void OpenGLRenderer::Clear()
 {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void OpenGLRenderer::Update(double deltaTime)
+{
+}
+
+void OpenGLRenderer::FixedUpdate(double fixedDeltaTime)
+{
+}
+
+void OpenGLRenderer::RenderImGui()
+{
+}
+
+void OpenGLRenderer::LateUpdate(double fixedDeltaTime)
+{
 }
 
 GLuint OpenGLRenderer::LoadShader(const std::string &vertexPath, const std::string &fragmentPath)

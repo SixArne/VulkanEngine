@@ -14,11 +14,21 @@ concept ComponentType = std::is_base_of<Component, T>::value;
 class GameObject final
 {
 public:
-    GameObject() = default;
+    GameObject(const std::string& name);
     ~GameObject() = default;
 
-    template<ComponentType T>
-    T* AddComponent();
+    void Init();
+    void Shutdown();
+    void Render();
+    void Update(double deltaTime);
+    void FixedUpdate(double fixedDeltaTime);
+    void RenderImGui();
+    void LateUpdate(double fixedDeltaTime);
+
+    inline const std::string& GetName() const;
+
+    template<ComponentType T, typename... Args>
+    T* AddComponent(Args&&... args);
 
     template<ComponentType T>
     T* GetComponent();
@@ -30,27 +40,28 @@ public:
     bool HasComponent();
 
 private:
-    std::unordered_map<std::type_index, std::unique_ptr<Component>> m_components{};
+    std::unordered_map<std::type_index, std::unique_ptr<Component>> m_Components{};
     std::vector<std::unique_ptr<GameObject>> m_Children{};
+    std::string m_Name;
 };
 
 #pragma region Template Implementations
-template<ComponentType T>
-T* GameObject::AddComponent()
+template<ComponentType T, typename... Args>
+T* GameObject::AddComponent(Args&&... args)
 {
     auto index = std::type_index(typeid(T));
-    std::unique_ptr<T> component = std::make_unique<T>();
-    m_components.emplace(index, std::move(component));
-    return reinterpret_cast<T*>(m_components[index].get());
+    std::unique_ptr<T> component = std::make_unique<T>(std::forward<Args>(args)...);
+    m_Components.emplace(index, std::move(component));
+    return reinterpret_cast<T*>(m_Components[index].get());
 }
 
 template<ComponentType T>
 T* GameObject::GetComponent()
 {
     auto index = std::type_index(typeid(T));
-    if (m_components.find(index) != m_components.end())
+    if (m_Components.find(index) != m_Components.end())
     {
-        return reinterpret_cast<T*>(m_components[index].get());
+        return reinterpret_cast<T*>(m_Components[index].get());
     }
     return nullptr;
 }
@@ -59,9 +70,9 @@ template<ComponentType T>
 void GameObject::RemoveComponent()
 {
     auto index = std::type_index(typeid(T));
-    if (m_components.find(index) != m_components.end())
+    if (m_Components.find(index) != m_Components.end())
     {
-        m_components.erase(index);
+        m_Components.erase(index);
     }
 }
 
@@ -69,7 +80,7 @@ template<ComponentType T>
 bool GameObject::HasComponent()
 {
     auto index = std::type_index(typeid(T));
-    return m_components.find(index) != m_components.end();
+    return m_Components.find(index) != m_Components.end();
 }
 #pragma endregion
 
